@@ -1,60 +1,163 @@
 # WatchEat
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.6.
+WatchEat is a web app for tracking the films and series you watch, and for ordering snacks to arrive at the time you plan to watch them.
 
-## Development server
+It has two parts: an Angular single-page app ([frontend/](frontend/)) and an Express REST API backed by SQL Server ([backend/](backend/)). The user interface is in Portuguese.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- **Catalogue**: browse films and series, with genres, cast, synopsis and trailer.
+- **Watch'List**: add content to a personal library and mark it as *Para Assistir*, *Assistindo*, *Em Espera*, *Terminado* or *Cancelado*.
+- **Friends**: send friend requests by email, accept or decline them, and view friends' profiles.
+- **Premium tier**: a monthly subscription that unlocks reviews, library visibility settings (public, private or friends only), statistics, and proposing edits to content.
+- **Moderated edits**: an admin accepts or rejects each edit proposed by a Premium user. A user with three rejected edits is suspended.
+- **Snack orders**: pick products, reserve a delivery time, and pay. An order that is still unpaid one hour before its reserved time expires.
+- **Payments**: a history of order and subscription payments. A Premium payment not made by the 8th of the month downgrades the account to Normal.
+- **Admin**: add films and series, and see all users, orders and payments.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Roles
 
-## Build
+| Role | Can do |
+| --- | --- |
+| Normal | Browse the catalogue, manage a Watch'List, add friends, order products |
+| Premium | Everything above, plus reviews, library visibility, statistics, and proposing content edits |
+| Admin | Everything above, plus adding content and moderating proposed edits |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Tech stack
 
-## Running unit tests
+| Layer | Technology |
+| --- | --- |
+| Frontend | Angular 15, Tailwind CSS 3, RxJS |
+| Backend | Node.js, Express 4, JSON Web Tokens |
+| Database | Microsoft SQL Server, through the `mssql` driver |
+| Tests | Jest and Supertest (backend), Karma and Jasmine (frontend) |
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Getting started
 
-## Running end-to-end tests
+### Prerequisites
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Node.js 18 (Angular 15 supports Node 14.20, 16.13 and 18.10 or later 18.x releases)
+- npm
+- A SQL Server instance you can create a database in
 
-## Further help
+### 1. Database
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
-# ProjectPDS - ...
-***
+The repository does not include a schema or seed script yet. Create the database and its tables by hand, using the definitions in [backend/models/](backend/models/) for the table and column names.
 
-## Ideas for the project:
-* IMDB Knock Off (Thanks to access to the imdb API we can get a lot of information)
-  * Friends, lists, requests for friends' lists;
-  * Films/series watched, to watch, left;
-  * Reviews, scores, rankings;
-  * Listings, application of filters (genres, actors, directors, duration, etc...);
-  * Developer tools:
-	* CRUD for films/series;
-  * Technologies
-    * Node.js;
-    * Espress.js;
-    * Angular or React;
-    * MySQL or SQLServer or MongoDB.
-    * (MEAN or MERN if we go with MongoDB (benefits still to be ascertained))
-  * Ideas:
-  * Business rules:
-    * User tier plan
-      * normal free tier - normal access to the platform (specify later)
-      * paid editor tier - normal access plus permission to edit films
-      * the edit must be accepted by a moderator, if the edit is rejected you will have to redo it and resubmit it, if it is rejected 3 times you will be suspended for x time and subject to an internal evaluation
-      * If you are rejected during the evaluation, you will once again become a normal user without being able to become an editor again.
-      * You can change your plan at any time, unless you are (suspended, banned).
-    * Setting a calendar of viewing times
-      * When you set a future time to watch a film, you'll be given the option to order food at that time.
-      * there will be integration with an external system where you can place an order for the time you have booked
-      * In the event that the chosen food is not available (time, ingredients, closed caterer, etc.), you will be offered other options, where the order is restarted.
-      * These orders will be linked to a courier, who can be visualised in the system.
-      * It will be possible to cancel the order up to 1 hour before the booking time.
-    * Film statistics (dashboard)
+### 2. Backend
 
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in `backend/`:
+
+```ini
+PORT=3000
+HOST=localhost
+HOST_URL=http://localhost:3000
+
+SQL_SERVER=localhost
+SQL_DATABASE=WatchEat
+SQL_USER=your_user
+SQL_PASSWORD=your_password
+ENCRYPT=false
+
+SECRET_TOKEN=a-long-random-string
+```
+
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Port the API listens on. Keep it at `3000`, because the frontend calls `http://localhost:3000` directly. |
+| `HOST`, `HOST_URL` | Host name and base URL of the API. `PORT` and `HOST` are required at startup. |
+| `SQL_SERVER`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD` | SQL Server connection details. |
+| `ENCRYPT` | Set to `true` to encrypt the database connection. |
+| `SECRET_TOKEN` | Secret used to sign and verify login tokens. |
+
+Start the API:
+
+```bash
+npm start
+```
+
+It runs under `nodemon` at `http://localhost:3000`.
+
+### 3. Frontend
+
+```bash
+cd WatchEat
+npm install
+npm start
+```
+
+Open `http://localhost:4200`.
+
+## Tests
+
+```bash
+# Backend (Jest + Supertest)
+cd backend
+npm test
+
+# Frontend (Karma + Jasmine)
+cd WatchEat
+npm test
+```
+
+The backend tests run against the database configured in `.env` and expect specific users to exist in it, such as `user1@gmail.com`.
+
+## Project structure
+
+```
+frontend/                    Angular app
+  src/app/
+    features/                One folder per page (login, biblioteca, pedidos, ...)
+    _shared/components/      Header, footer, not-found page
+    _shared/services/        One HTTP service per API resource, plus AuthService
+  src/assets/                Logos and product images
+
+backend/                     Express API
+  server.js                  Entry point
+  app.js                     Middleware and route registration
+  config.js                  Reads .env
+  routes/                    URL definitions and the middleware each one requires
+  controllers/               Request handlers
+  services/                  SQL queries
+  middleware/                Token check, role checks, payment and suspension rules
+  models/                    Table definitions
+  utils/constants.js         Status and role constants
+  tests/                     Jest tests
+```
+
+## API overview
+
+All endpoints are under `/api`. Apart from login, registration, and reading the catalogue and genres, every endpoint needs a token, sent as `Authorization: Bearer <token>`. Tokens expire after one hour.
+
+| Area | Example endpoints | Route file |
+| --- | --- | --- |
+| Auth | `POST /authLogin`, `POST /authRegister` | [authRoutes.js](backend/routes/authRoutes.js) |
+| Content | `GET /Conteudos`, `GET /Conteudos/Filmes`, `GET /Conteudo/:Id`, `POST /Conteudo/Filme` | [conteudoRoutes.js](backend/routes/conteudoRoutes.js) |
+| Genres and actors | `GET /Generos` | [generoRoutes.js](backend/routes/generoRoutes.js), [atorRoutes.js](backend/routes/atorRoutes.js) |
+| Users and friends | `GET /Utilizador/:Id`, `POST /UtilizadorAmizadeByEmail/:userId` | [utilizadorRoutes.js](backend/routes/utilizadorRoutes.js) |
+| Library | `GET /Biblioteca/:userId`, `PUT /BibliotecaVisibilidade/:userId` | [bibliotecaRoutes.js](backend/routes/bibliotecaRoutes.js) |
+| Reviews | `POST /ReviewPremium/:userId` | [reviewsPremiumRoutes.js](backend/routes/reviewsPremiumRoutes.js) |
+| Content edits | `POST /AlteracaoConteudo`, `PUT /AlteracaoConteudo` | [alteracaoConteudoRoutes.js](backend/routes/alteracaoConteudoRoutes.js) |
+| Products and menus | See route files | [produtoRoutes.js](backend/routes/produtoRoutes.js), [menuRoutes.js](backend/routes/menuRoutes.js) |
+| Orders | `POST /Pedido`, `GET /UserPedidos/:userId` | [pedidoRoutes.js](backend/routes/pedidoRoutes.js) |
+| Payments | `GET /UserPagamentos/:userId`, `PUT /Pagamento/:Id` | [pagamentoRoutes.js](backend/routes/pagamentoRoutes.js) |
+| Couriers | See route file | [estafetaRoutes.js](backend/routes/estafetaRoutes.js) |
+| Statistics | `GET /Estatisticas` | [estatisticasRoutes.js](backend/routes/estatisticasRoutes.js) |
+
+## Known limitations
+
+This is a learning project and is not ready for production use.
+
+- Any logged-in user can read another user's profile and library, whatever the library's visibility setting.
+- Payments are simulated. No payment provider is connected.
+- There is no database schema or seed script in the repository.
+- The API address is hard-coded in the frontend.
+- The search box in the header is not connected to anything yet.
+- Couriers and menus exist in the API but have no pages in the app.
+
+Ideas from the original plan that are not built yet: importing catalogue data from an external film API, filtering by genre, actor, director or duration, connecting orders to an external food provider, and tracking the courier.
