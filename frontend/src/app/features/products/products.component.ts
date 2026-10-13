@@ -51,6 +51,10 @@ export class ProductsComponent {
     }
   }
 
+  totalItens(): number {
+    return Object.values(this.produtosQuantidades).reduce((total, quantidade) => total + quantidade, 0);
+  }
+
   openModal() {
     this.staticModal.nativeElement.classList.remove('hidden');
     this.staticModal.nativeElement.classList.add('flex');

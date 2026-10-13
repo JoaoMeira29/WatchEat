@@ -144,3 +144,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Screenshots and logs from browser checks
+.playwright-mcp/

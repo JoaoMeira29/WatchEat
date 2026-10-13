@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {ContentDataService} from "../../shared/services/content/content-data.service";
 
 @Component({
@@ -6,9 +6,11 @@ import {ContentDataService} from "../../shared/services/content/content-data.ser
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent {
   conteudos: any[] = [];
   randomConteudos: any[] = [];
+  // The title shown large at the top of the page
+  featured: any = null;
 
   constructor(private conteudoDataService: ContentDataService) {}
 
@@ -18,29 +20,11 @@ export class HomeComponent implements AfterViewInit {
     });
     this.conteudoDataService.getRandomContents().subscribe((data: Object) => {
       this.randomConteudos = data as any[]; // Cast the data to an array type
+      this.featured = this.randomConteudos[0] ?? null;
     });
   }
 
-  ngAfterViewInit(): void {
-    const slidesContainer = document.getElementById("slidesContainer");
-    const prevButton = document.querySelector(".prev");
-    const nextButton = document.querySelector(".next");
-
-    if (slidesContainer && prevButton && nextButton) {
-      prevButton.addEventListener("click", () => {
-        slidesContainer.scrollLeft -= slidesContainer.clientWidth;
-      });
-
-      nextButton.addEventListener("click", () => {
-        slidesContainer.scrollLeft += slidesContainer.clientWidth;
-      });
-    }
-  }
-
-  scrollSlides(direction: number): void {
-    const slidesContainer = document.getElementById("slidesContainer");
-    if (slidesContainer) {
-      slidesContainer.scrollLeft += direction * slidesContainer.clientWidth;
-    }
+  selectFeatured(conteudo: any): void {
+    this.featured = conteudo;
   }
 }

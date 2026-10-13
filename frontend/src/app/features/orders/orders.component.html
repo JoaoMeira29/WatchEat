@@ -1,13 +1,12 @@
-<p>pagina-pedidos works!</p>
-<div class="flex ml-10 mt-10 bg-gray-800 shadow-2xl rounded-lg p-5 m-10">
-  <div class="bg-gray-800 p-8 rounded-md w-full ">
+<div class="page">
+  <div class="w-full">
     <div class=" flex items-center justify-between pb-6">
       <div>
-        <h1 class="text-red-600 font-bold">Lista de Pedidos</h1>
+        <h1 class="page-title">Histórico de pedidos</h1>
       </div>
       <div class="flex items-center justify-between">
         <div class="lg:ml-40 ml-10 space-x-8">
-          <button [routerLink]="['/products']" class="bg-red-600 hover:bg-red-800 py-1 px-2 rounded text-white text-sm">Novo Pedido</button>
+          <button [routerLink]="['/products']" class="btn-primary">Novo pedido</button>
         </div>
       </div>
     </div>
@@ -18,23 +17,23 @@
             <thead>
             <tr>
               <th
-                class="px-5 py-3 border-b-2 border-gray-400 bg-gray-800 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                class="px-5 py-3 border-b border-gray-700 text-left text-sm font-semibold text-gray-400">
                 Descrição
               </th>
               <th
-                class="px-5 py-3 border-b-2 border-gray-400 bg-gray-800 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                class="px-5 py-3 border-b border-gray-700 text-left text-sm font-semibold text-gray-400">
                 Hora Reserva
               </th>
               <th
-                class="px-5 py-3 border-b-2 border-gray-400 bg-gray-800 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                class="px-5 py-3 border-b border-gray-700 text-left text-sm font-semibold text-gray-400">
                 Hora Reservada
               </th>
               <th
-                class="px-5 py-3 border-b-2 border-gray-400 bg-gray-800 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                class="px-5 py-3 border-b border-gray-700 text-left text-sm font-semibold text-gray-400">
                 Preço
               </th>
               <th
-                class="px-5 py-3 border-b-2 border-gray-400 bg-gray-800 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                class="px-5 py-3 border-b border-gray-700 text-left text-sm font-semibold text-gray-400">
                 Estado
               </th>
             </tr>

@@ -1,74 +1,69 @@
-<div class="text-white ml-6 mt-6">
-  <!-- Component Start -->
-  <h1 class="text-3xl mt-8 ml-4">Lista de Produtos</h1>
-  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between mt-4 ml-4">
-    <span class="text-sm font-semibold">{{ produtos.length + " Produtos "}}</span>
-    <div class="flex flex-row-reverse">
-      <button class="bg-red-600 hover:bg-red-700 text-white py-1 rounded px-2 mr-14" id="concluir-pedido" (click)="openModal()">Concluir Pedido</button>
+<section class="page">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="page-title">Produtos</h1>
+      <p class="mt-3 text-gray-400">{{ produtos.length }} {{ produtos.length === 1 ? 'produto' : 'produtos' }} para acompanhar a sessão</p>
     </div>
+    <button class="btn-primary px-5 py-2.5 text-base" id="concluir-pedido" (click)="openModal()" [disabled]="produtosArray.length === 0">
+      Concluir pedido
+      <span *ngIf="produtosArray.length > 0" class="rounded-full bg-white/20 px-2 text-sm">{{ totalItens() }}</span>
+    </button>
   </div>
-</div>
-<div class="flex-col min-h-screen p-10 grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-x-6 gap-y-12 w-full mt-4">
-  <!-- Product Tile Start -->
-  <div *ngFor="let prod of produtos">
-    <img alt="produto" src="{{ prod.Imagem }}" class="hover:!opacity-90 block h-64 rounded shadow-lg bg-gray-700"/>
-    <div class="flex items-center justify-between mt-2">
-      <div class="text-white">
-        <p class="font-medium">{{ prod.Nome}}</p>
-        <div class="flex items-center">
-          <span class="text-xs font-medium">Stock</span>
-          <span class="text-xs font-extrabold ml-1 text-red-600">{{ prod.Stock }}</span>
+
+  <div class="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <article *ngFor="let prod of produtos">
+      <div class="relative aspect-square overflow-hidden rounded-xl bg-gray-800 ring-1 ring-white/5">
+        <img [alt]="prod.Nome" [src]="prod.Imagem" class="h-full w-full object-cover" loading="lazy">
+        <span *ngIf="produtosQuantidades[prod.Nome]" class="absolute right-3 top-3 rounded-full bg-butter-400 px-2.5 py-0.5 text-sm font-bold text-gray-950">{{ produtosQuantidades[prod.Nome] }} no pedido</span>
+      </div>
+      <div class="mt-3 flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <p class="font-semibold leading-snug">{{ prod.Nome }}</p>
+          <p class="mt-0.5 text-sm text-gray-400">{{ prod.Stock }} em stock</p>
         </div>
+        <p class="shrink-0 text-lg font-bold text-butter-400">{{ prod.Preco.toFixed(2) }} €</p>
       </div>
-      <div class="flex items-center">
-        <button class="bg-gray-800 hover:bg-gray-900 text-white font-bold pt-0.5 pb-1 px-3 mr-5 rounded" (click)="adicionarProduto(prod.Nome)">+</button>
-        <span class="flex items-center mr-4 h-8 bg-red-600 text-white text-sm px-2 rounded">{{ prod.Preco.toFixed(2) + "€"}}</span>
-      </div>
-    </div>
+      <button class="btn-quiet mt-3 w-full" (click)="adicionarProduto(prod.Nome)" [disabled]="prod.Stock < 1">Adicionar ao pedido</button>
+    </article>
   </div>
-</div>
+</section>
 
 
 <!-- Main modal -->
-<div #staticModal id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 items-center justify-center z-50 top-0 left-0 right-0 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-  <div class="relative w-full max-w-2xl max-h-full">
+<div #staticModal id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 items-center justify-center overflow-y-auto bg-black/70 p-4">
+  <div class="relative w-full max-w-lg">
     <!-- Modal content -->
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+    <div class="panel shadow-2xl shadow-black/60">
       <form [formGroup]="pedidoForm">
         <!-- Modal header -->
-        <div class="flex items-start justify-between p-4 border-b-2 rounded-t dark:border-gray-600">
-          <h3 class="transition-colors duration-150 hover:text-red-600 hover:cursor-pointer text-xl font-semibold text-gray-900 dark:text-white">
-          Concluir Pedido
-          </h3>
-          <button (click)="closeModal()" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="defaultModal">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            <span class="sr-only">Close modal</span>
+        <div class="flex items-center justify-between border-b border-gray-800 p-5">
+          <h3 class="text-xl font-semibold">Concluir pedido</h3>
+          <button (click)="closeModal()" type="button" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-800 hover:text-gray-50" data-modal-hide="defaultModal">
+            <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <span class="sr-only">Fechar</span>
           </button>
         </div>
         <!-- Modal body -->
-        <div class="p-5 space-y-6">
-          <div class="grid gap-6">
-            <div>
-              <div class="my-3">
-                <label class="text-white dark:text-gray-200" for="Descricao">Descrição</label>
-                <input formControlName="Descricao" id="Descricao" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none border border-gray-600 focus:border-red-600 hover:border-red-600 active:border-red-600 disabled:pointer-events-none" readonly >
-              </div>
-              <div class="my-3">
-                <label class="text-white dark:text-gray-200" for="morada">Morada</label>
-                <input formControlName="Morada" id="morada" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none border border-gray-600 focus:border-red-600 hover:border-red-600 active:border-red-600">
-              </div>
-              <div class="my-3">
-                <label class="text-white dark:text-gray-200" for="horaReservada">Hora Reservada</label>
-                <input formControlName="HoraReservada" id="horaReservada" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:outline-none border border-gray-600 focus:border-red-600 hover:border-red-600 active:border-red-600">
-              </div>
-            </div>
+        <div class="space-y-4 p-5">
+          <div>
+            <label class="field-label" for="Descricao">Pedido</label>
+            <input formControlName="Descricao" id="Descricao" type="text" class="field text-gray-300" readonly>
           </div>
+          <div>
+            <label class="field-label" for="morada">Morada de entrega</label>
+            <input formControlName="Morada" id="morada" type="text" class="field" autocomplete="street-address">
+          </div>
+          <div>
+            <label class="field-label" for="horaReservada">Hora de entrega</label>
+            <input formControlName="HoraReservada" id="horaReservada" type="datetime-local" class="field">
+            <p class="mt-1.5 text-sm text-gray-400">Pelo menos uma hora depois de agora.</p>
+          </div>
+          <p *ngIf="errorMessage" class="rounded-lg bg-red-900/40 px-3.5 py-2.5 text-sm font-medium text-red-200" role="alert">{{ errorMessage }}</p>
         </div>
         <!-- Modal footer -->
-        <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-          <div *ngIf="errorMessage" class="font-semibold text-red-600 text-sm">{{ errorMessage }}</div>
-          <button (click)="concluirPedido()" data-modal-hide="defaultModal" type="button" class="bg-red-600 hover:bg-red-800 py-1 px-2 rounded text-white text-sm">Submeter</button>
-          <button (click)="closeModal()" data-modal-hide="defaultModal" type="button" class="bg-gray-900 hover:bg-gray-950 py-1 px-2 rounded text-white text-sm">Cancelar</button>
+        <div class="flex items-center justify-end gap-3 border-t border-gray-800 p-5">
+          <button (click)="closeModal()" data-modal-hide="defaultModal" type="button" class="btn-quiet">Cancelar</button>
+          <button (click)="concluirPedido()" data-modal-hide="defaultModal" type="button" class="btn-primary">Concluir pedido</button>
         </div>
       </form>
     </div>

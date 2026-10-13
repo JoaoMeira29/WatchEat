@@ -34,6 +34,17 @@ app.use('/api/auth', rateLimit({
     message: { error: 'Demasiadas tentativas, por favor tente mais tarde!' }
 }));
 
+// The API has no pages of its own: this only tells a visitor where things are
+app.get('/', (req, res) => {
+    res.json({
+        name: 'WatchEat API',
+        status: 'running',
+        endpoints: '/api',
+        example: '/api/contents',
+        website: config.corsOrigin
+    });
+});
+
 app.use('/api', require('./routes/contentRoutes').routes);
 app.use('/api', require('./routes/userRoutes').routes);
 app.use('/api', require('./routes/productRoutes').routes);

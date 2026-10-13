@@ -21,10 +21,13 @@ export class HeaderComponent {
   ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    const tokenPayload = decode(token as string) as any;
-    this.currentUser = tokenPayload.user[0];
     this.IsUserLogged();
+    // Visitors who are not logged in have no token to read
+    const token = localStorage.getItem('token');
+    if (this.isUserLogged && token) {
+      const tokenPayload = decode(token) as any;
+      this.currentUser = tokenPayload.user[0];
+    }
   }
 
   IsUserLogged(): void {
