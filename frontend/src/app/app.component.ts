@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
-import {AuthService} from "./_shared/services/_Auth/auth.service";
+import {AuthService} from "./shared/services/auth/auth.service";
 
 
 @Component({

@@ -1,6 +1,6 @@
 'use strict'
 const jwt = require('jsonwebtoken');
-const utilizadorData = require('../services/utilizadorService');
+const userService = require('../services/userService');
 const utils = require('../utils/constants');
 
 const checkRoleAdmin = async (req, res, next) => {
@@ -15,7 +15,7 @@ const checkRoleAdmin = async (req, res, next) => {
 
     try{
         const user = jwt.verify(token, process.env.SECRET_TOKEN);
-        const findUser = await utilizadorData.listUtilizadorById(user.user[0].Id);
+        const findUser = await userService.listUserById(user.user[0].Id);
 
         if (findUser[0].Utilizador_Roles === utils.user_roles.UR_Admin) {
             next();
@@ -44,7 +44,7 @@ const checkRolePremium = async (req, res, next) => {
 
     try{
         const user = jwt.verify(token, process.env.SECRET_TOKEN);
-        const findUser = await utilizadorData.listUtilizadorById(user.user[0].Id);
+        const findUser = await userService.listUserById(user.user[0].Id);
 
         if (findUser[0].Utilizador_Roles === utils.user_roles.UR_Premium || findUser[0].Utilizador_Roles === utils.user_roles.UR_Admin ) {
             next();

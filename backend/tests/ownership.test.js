@@ -1,11 +1,11 @@
-jest.mock('../services/pagamentoService', () => ({ listPagamentoById: jest.fn() }));
-jest.mock('../services/pedidoService', () => ({ listPedidoById: jest.fn() }));
+jest.mock('../services/paymentService', () => ({ listPaymentById: jest.fn() }));
+jest.mock('../services/orderService', () => ({ listOrderById: jest.fn() }));
 
-const pagamentoData = require('../services/pagamentoService');
-const pedidoData = require('../services/pedidoService');
+const paymentService = require('../services/paymentService');
+const orderService = require('../services/orderService');
 const ownership = require('../middleware/ownership');
 
-// Same shape authCookieVerify leaves in req.user
+// Same shape authVerify leaves in req.user
 const mockReq = (tokenUser, extra = {}) => ({
     user: { user: { user: tokenUser ? [tokenUser] : undefined } },
     params: {},
@@ -85,67 +85,67 @@ describe('checkBodyOwner', () => {
     });
 });
 
-describe('checkPagamentoOwner', () => {
+describe('checkPaymentOwner', () => {
     it('should call next when the payment belongs to the logged in user', async () => {
-        pagamentoData.listPagamentoById.mockResolvedValue([{ Id: 5, UtilizadorId: 1 }]);
+        paymentService.listPaymentById.mockResolvedValue([{ Id: 5, UtilizadorId: 1 }]);
         const next = jest.fn();
 
-        await ownership.checkPagamentoOwner(mockReq(normal, { params: { Id: '5' } }), mockRes(), next);
+        await ownership.checkPaymentOwner(mockReq(normal, { params: { Id: '5' } }), mockRes(), next);
 
         expect(next).toHaveBeenCalled();
     });
 
     it('should return 403 when the payment belongs to another user', async () => {
-        pagamentoData.listPagamentoById.mockResolvedValue([{ Id: 5, UtilizadorId: 2 }]);
+        paymentService.listPaymentById.mockResolvedValue([{ Id: 5, UtilizadorId: 2 }]);
         const res = mockRes();
         const next = jest.fn();
 
-        await ownership.checkPagamentoOwner(mockReq(normal, { params: { Id: '5' } }), res, next);
+        await ownership.checkPaymentOwner(mockReq(normal, { params: { Id: '5' } }), res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(403);
     });
 
     it('should return 404 when the payment does not exist', async () => {
-        pagamentoData.listPagamentoById.mockResolvedValue([]);
+        paymentService.listPaymentById.mockResolvedValue([]);
         const res = mockRes();
         const next = jest.fn();
 
-        await ownership.checkPagamentoOwner(mockReq(normal, { params: { Id: '5' } }), res, next);
+        await ownership.checkPaymentOwner(mockReq(normal, { params: { Id: '5' } }), res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(404);
     });
 });
 
-describe('checkPedidoOwner', () => {
+describe('checkOrderOwner', () => {
     it('should return 403 when the order belongs to another user', async () => {
-        pedidoData.listPedidoById.mockResolvedValue([{ Id: 7, UtilizadorId: 2 }]);
+        orderService.listOrderById.mockResolvedValue([{ Id: 7, UtilizadorId: 2 }]);
         const res = mockRes();
         const next = jest.fn();
 
-        await ownership.checkPedidoOwner(mockReq(normal, { params: { Id: '7' } }), res, next);
+        await ownership.checkOrderOwner(mockReq(normal, { params: { Id: '7' } }), res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(403);
     });
 
     it('should call next when the order belongs to the logged in user', async () => {
-        pedidoData.listPedidoById.mockResolvedValue([{ Id: 7, UtilizadorId: 1 }]);
+        orderService.listOrderById.mockResolvedValue([{ Id: 7, UtilizadorId: 1 }]);
         const next = jest.fn();
 
-        await ownership.checkPedidoOwner(mockReq(normal, { params: { Id: '7' } }), mockRes(), next);
+        await ownership.checkOrderOwner(mockReq(normal, { params: { Id: '7' } }), mockRes(), next);
 
         expect(next).toHaveBeenCalled();
     });
 });
 
-describe('checkPedidoAmizadeParticipant', () => {
+describe('checkFriendRequestParticipant', () => {
     it('should let the receiver accept the request', () => {
         const next = jest.fn();
         const req = mockReq(normal, { params: { Id: '2' }, body: { uId2: 1, Estado: 'Amigos' } });
 
-        ownership.checkPedidoAmizadeParticipant(req, mockRes(), next);
+        ownership.checkFriendRequestParticipant(req, mockRes(), next);
 
         expect(next).toHaveBeenCalled();
     });
@@ -155,7 +155,7 @@ describe('checkPedidoAmizadeParticipant', () => {
         const next = jest.fn();
         const req = mockReq(normal, { params: { Id: '1' }, body: { uId2: 2, Estado: 'Amigos' } });
 
-        ownership.checkPedidoAmizadeParticipant(req, res, next);
+        ownership.checkFriendRequestParticipant(req, res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(403);
@@ -165,7 +165,7 @@ describe('checkPedidoAmizadeParticipant', () => {
         const next = jest.fn();
         const req = mockReq(normal, { params: { Id: '1' }, body: { uId2: 2, Estado: 'Nao Aceitar' } });
 
-        ownership.checkPedidoAmizadeParticipant(req, mockRes(), next);
+        ownership.checkFriendRequestParticipant(req, mockRes(), next);
 
         expect(next).toHaveBeenCalled();
     });
@@ -175,7 +175,7 @@ describe('checkPedidoAmizadeParticipant', () => {
         const next = jest.fn();
         const req = mockReq(normal, { params: { Id: '2' }, body: { uId2: 3, Estado: 'Amigos' } });
 
-        ownership.checkPedidoAmizadeParticipant(req, res, next);
+        ownership.checkFriendRequestParticipant(req, res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(403);

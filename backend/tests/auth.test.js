@@ -1,11 +1,11 @@
 const request = require('supertest');
 const app = require('../app');
-const utilizadorData = require('../services/utilizadorService');
+const userService = require('../services/userService');
 
 describe('POST /api/authLogin', () => {
     it('should redirect to \'/pagina-inicial\' if valid login', async () => {
         const res = await request(app)
-            .post('/api/authLogin')
+            .post('/api/auth/login')
             .send({
                 Email: 'user1@gmail.com',
                 Password: '1234'
@@ -18,7 +18,7 @@ describe('POST /api/authLogin', () => {
 
     it('should return 403 if invalid login', async () => {
         const res = await request(app)
-            .post('/api/authLogin')
+            .post('/api/auth/login')
             .send({
                 Email: 'testuser@test.com',
                 Password: 'invalidpassword'
@@ -30,7 +30,7 @@ describe('POST /api/authLogin', () => {
 
     it('should return 403 if user is blocked or suspended', async () => {
         const res = await request(app)
-            .post('/api/authLogin')
+            .post('/api/auth/login')
             .send({
                 Email: 'user4@gmail.com',
                 Password: '13121'
@@ -44,7 +44,7 @@ describe('POST /api/authLogin', () => {
 describe('POST /api/authRegister', () => {
     it('should return 409 if email is already in use', async () => {
         const res = await request(app)
-            .post('/api/authRegister')
+            .post('/api/auth/register')
             .send({
                 Email: 'user1@gmail.com',
                 Password: 'vsdsdv',
@@ -56,7 +56,7 @@ describe('POST /api/authRegister', () => {
 
     it('should return 409 if password doesn\'t match confirm_password', async () => {
         const res = await request(app)
-            .post('/api/authRegister')
+            .post('/api/auth/register')
             .send({
                 Email: 'newTestUser@test.com',
                 Password: 'newTestUserPassword',
@@ -68,11 +68,11 @@ describe('POST /api/authRegister', () => {
     });
 
     it('should register a new user', async () => {
-        const listUtilizadorByEmailMock = jest.spyOn(utilizadorData, 'listUtilizadorByEmail').mockResolvedValue([]);
-        const createNewRegisterUtilizadorMock = jest.spyOn(utilizadorData, 'createNewRegisterUtilizador').mockResolvedValue();
+        const listUtilizadorByEmailMock = jest.spyOn(userService, 'listUserByEmail').mockResolvedValue([]);
+        const createNewRegisterUtilizadorMock = jest.spyOn(userService, 'createRegisteredUser').mockResolvedValue();
 
         const res = await request(app)
-            .post('/api/authRegister')
+            .post('/api/auth/register')
             .send({
                 Email: 'test@example.com',
                 Password: 'password123',

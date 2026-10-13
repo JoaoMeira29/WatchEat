@@ -1,7 +1,7 @@
 'use strict'
 const jwt = require('jsonwebtoken');
 
-const authCookieVerify = async (req, res, next) => {
+const authVerify = async (req, res, next) => {
     let token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
@@ -23,5 +23,5 @@ const authCookieVerify = async (req, res, next) => {
 }
 
 module.exports = {
-    authCookieVerify
+    authVerify
 }

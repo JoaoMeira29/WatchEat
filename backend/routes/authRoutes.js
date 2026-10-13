@@ -1,15 +1,15 @@
 'use strict'
 const express = require('express');
 const authController = require('../controllers/authController');
-const authCookie = require("../middleware/authVerify");
+const auth = require("../middleware/authVerify");
 const checkRoles = require("../middleware/rolesAuthorization");
-const checkAlteracaoCount = require("../middleware/suspendAfterRejectedEdits");
+const rejectedEdits = require("../middleware/suspendAfterRejectedEdits");
 const router = express.Router();
 
-const { authUtilizador, registerUtilizador} = authController;
+const { login, register} = authController;
 
-router.post('/authLogin', checkAlteracaoCount.alteracoesCountVerifyOnLogin, authUtilizador);
-router.post('/authRegister', registerUtilizador);
+router.post('/auth/login', rejectedEdits.suspendAfterRejectedEditsOnLogin, login);
+router.post('/auth/register', register);
 
 module.exports = {
     routes: router

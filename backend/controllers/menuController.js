@@ -1,9 +1,9 @@
 'use strict'
-const menuData = require('../services/menuService');
+const menuService = require('../services/menuService');
 
 const getMenus = async (req, res) => {
     try {
-        const menus = await menuData.listMenus();
+        const menus = await menuService.listMenus();
         res.send(menus);
     }
     catch (error) {
@@ -14,7 +14,7 @@ const getMenus = async (req, res) => {
 const getMenu = async (req, res)=> {
     try {
         const menuId = req.params.Id;
-        const oneMenu = await menuData.listMenuById(menuId);
+        const oneMenu = await menuService.listMenuById(menuId);
         res.send(oneMenu);
     }
     catch (error) {
@@ -25,7 +25,7 @@ const getMenu = async (req, res)=> {
 const addMenu = async (req, res)=> {
     try {
         const data = req.body;
-        const created = await menuData.createMenu(data);
+        const created = await menuService.createMenu(data);
         res.send(created);
     }
     catch (error) {
@@ -37,7 +37,7 @@ const updateMenu = async (req, res)=> {
     try {
         const menuId = req.params.Id;
         const data = req.body;
-        const updated = await menuData.updateMenu(menuId, data);
+        const updated = await menuService.updateMenu(menuId, data);
         res.send(updated);
     }
     catch (error) {
@@ -48,7 +48,7 @@ const updateMenu = async (req, res)=> {
 const deleteMenu = async (req, res)=> {
     try {
         const menuId = req.params.Id;
-        const deleted = await menuData.deleteMenu(menuId);
+        const deleted = await menuService.deleteMenu(menuId);
         res.send(deleted);
     }
     catch (error) {

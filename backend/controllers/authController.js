@@ -1,14 +1,14 @@
 'use strict'
 
 const jwt = require('jsonwebtoken');
-const utilizadoresData = require('../services/utilizadorService');
+const userService = require('../services/userService');
 const utils = require('../utils/constants');
 const passwordUtils = require('../utils/password');
 
-const authUtilizador = async (req, res, next)=> {
+const login = async (req, res, next)=> {
     try {
         const { Email, Password } = req.body;
-        const user = await utilizadoresData.listUtilizadorByEmail(Email);
+        const user = await userService.listUserByEmail(Email);
 
         if (!Array.isArray(user) || !user.length) {
             return res.status(403).json({
@@ -23,7 +23,7 @@ const authUtilizador = async (req, res, next)=> {
             });
         }
         if (passwordCheck.needsRehash) {
-            await utilizadoresData.updatePasswordUtilizador(user[0].Id, await passwordUtils.hashPassword(Password));
+            await userService.updateUserPassword(user[0].Id, await passwordUtils.hashPassword(Password));
         }
         if (user[0].Estado !== utils.estadosUtilizadores.EU_Ativo) {
             return res.status(403).json({
@@ -45,12 +45,12 @@ const authUtilizador = async (req, res, next)=> {
     }
 }
 
-const registerUtilizador = async (req, res)=> {
+const register = async (req, res)=> {
     try {
         const Email = req.body.Email;
         const Password = req.body.Password;
         const confirm_password = req.body.confirm_password;
-        const userCheck = await utilizadoresData.listUtilizadorByEmail(Email);
+        const userCheck = await userService.listUserByEmail(Email);
 
         if (Object.keys(userCheck).length > 0) {
             if (userCheck[0].Email == Email) {
@@ -72,8 +72,8 @@ const registerUtilizador = async (req, res)=> {
         }
 
         const newUserdata = { ...req.body, Password: await passwordUtils.hashPassword(Password) };
-        await utilizadoresData.createNewRegisterUtilizador(newUserdata);
-        const user = await utilizadoresData.listUtilizadorByEmail(Email);
+        await userService.createRegisteredUser(newUserdata);
+        const user = await userService.listUserByEmail(Email);
         delete user[0].Password;
         const token = jwt.sign({user}, process.env.SECRET_TOKEN, { expiresIn: "1h"});
 
@@ -89,6 +89,6 @@ const registerUtilizador = async (req, res)=> {
 }
 
 module.exports = {
-    authUtilizador,
-    registerUtilizador
+    login,
+    register
 }

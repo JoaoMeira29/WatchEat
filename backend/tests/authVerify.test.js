@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const authCookie = require('../middleware/authVerify');
 require('dotenv').config();
 
-describe('USE authCookieVerify middleware', () => {
+describe('USE authVerify middleware', () => {
     it('should call next with valid token from headers', async () => {
         const token = jwt.sign({ user: 'mockExample' }, process.env.SECRET_TOKEN);
         const req = {
@@ -15,7 +15,7 @@ describe('USE authCookieVerify middleware', () => {
         const res = {};
         const next = jest.fn();
 
-        await authCookie.authCookieVerify(req, res, next);
+        await authCookie.authVerify(req, res, next);
 
         expect(next).toHaveBeenCalled();
     });
@@ -32,7 +32,7 @@ describe('USE authCookieVerify middleware', () => {
         const res = {};
         const next = jest.fn();
 
-        await authCookie.authCookieVerify(req, res, next);
+        await authCookie.authVerify(req, res, next);
 
         expect(next).toHaveBeenCalled();
     });
@@ -49,7 +49,7 @@ describe('USE authCookieVerify middleware', () => {
         };
         const next = jest.fn();
 
-        await authCookie.authCookieVerify(req, res, next);
+        await authCookie.authVerify(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({ message: 'Token not provided' });
@@ -69,7 +69,7 @@ describe('USE authCookieVerify middleware', () => {
         };
         const next = jest.fn();
 
-        await authCookie.authCookieVerify(req, res, next);
+        await authCookie.authVerify(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalled();

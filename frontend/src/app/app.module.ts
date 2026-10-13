@@ -5,27 +5,27 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './features/_login/login.component';
-import { RegisterComponent } from './features/_register/register.component';
-import { PagBibliotecaComponent } from './features/pag-biblioteca/pag-biblioteca.component';
-import { PagPerfilComponent } from './features/pag-perfil/pag-perfil.component';
-import { PagFilmesComponent } from './features/pag-filmes/pag-filmes.component';
-import { PagSeriesComponent } from './features/pag-series/pag-series.component';
-import { PagInicialComponent } from './features/pag-inicial/pag-inicial.component';
-import { HeaderComponent } from './_shared/components/header/header.component';
-import { FooterComponent } from './_shared/components/footer/footer.component';
-import { PagConteudoComponent } from './features/pag-conteudo/pag-conteudo.component';
-import { PagProdutosComponent } from './features/pag-produtos/pag-produtos.component';
-import { PagPagamentosComponent } from './features/pag-pagamentos/pag-pagamentos.component';
-import { PagPedidosComponent } from './features/pag-pedidos/pag-pedidos.component';
-import { PagAddConteudoComponent } from './features/pag-add-conteudo/pag-add-conteudo.component';
-import { PagEstatisticasComponent } from './features/pag-estatisticas/pag-estatisticas.component';
-import { PagFriendsComponent } from './features/pag-friends/pag-friends.component';
-import { PagPremiumComponent } from './features/pag-premium/pag-premium.component';
-import { PagEditPerfilComponent } from './features/pag-edit-perfil/pag-edit-perfil.component';
-import { PagNotFoundComponent } from './_shared/components/pag-not-found/pag-not-found.component';
+import { LoginComponent } from './features/login/login.component';
+import { RegisterComponent } from './features/register/register.component';
+import { LibraryComponent } from './features/library/library.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { MoviesComponent } from './features/movies/movies.component';
+import { SeriesComponent } from './features/series/series.component';
+import { HomeComponent } from './features/home/home.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
+import { ContentComponent } from './features/content/content.component';
+import { ProductsComponent } from './features/products/products.component';
+import { PaymentsComponent } from './features/payments/payments.component';
+import { OrdersComponent } from './features/orders/orders.component';
+import { AddContentComponent } from './features/add-content/add-content.component';
+import { StatisticsComponent } from './features/statistics/statistics.component';
+import { FriendsComponent } from './features/friends/friends.component';
+import { PremiumComponent } from './features/premium/premium.component';
+import { EditProfileComponent } from './features/edit-profile/edit-profile.component';
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 
-import { AuthService } from './_shared/services/_Auth/auth.service';
+import { AuthService } from './shared/services/auth/auth.service';
 
 @NgModule({
   imports: [
@@ -36,45 +36,45 @@ import { AuthService } from './_shared/services/_Auth/auth.service';
     RouterModule.forRoot([
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: '', redirectTo: 'pagina-inicial', pathMatch: 'full' },
-      { path: 'pagina-inicial', component: PagInicialComponent },
-      { path: 'lista-filmes', component: PagFilmesComponent },
-      { path: 'lista-series', component: PagSeriesComponent },
-      { path: 'biblioteca', component: PagBibliotecaComponent, canActivate: [AuthService] },
-      { path: 'perfil/:id', component: PagPerfilComponent, canActivate: [AuthService] },
-      { path: 'editPerfil', component: PagEditPerfilComponent, canActivate: [AuthService] },
-      { path: 'addConteudo', component: PagAddConteudoComponent },
-      { path: 'conteudo/:id', component: PagConteudoComponent, canActivate: [AuthService] },
-      { path: 'pagamentos', component: PagPagamentosComponent, canActivate: [AuthService] },
-      { path: 'pedidos', component: PagPedidosComponent, canActivate: [AuthService] },
-      { path: 'premium', component: PagPremiumComponent, canActivate: [AuthService] },
-      { path: 'produtos', component: PagProdutosComponent, canActivate: [AuthService] },
-      { path: 'estatisticas', component: PagEstatisticasComponent, canActivate: [AuthService] },
-      { path: 'amigos', component: PagFriendsComponent, canActivate: [AuthService] },
-      { path: '**', component: PagNotFoundComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      { path: 'movies', component: MoviesComponent },
+      { path: 'series', component: SeriesComponent },
+      { path: 'library', component: LibraryComponent, canActivate: [AuthService] },
+      { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthService] },
+      { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthService] },
+      { path: 'add-content', component: AddContentComponent },
+      { path: 'content/:id', component: ContentComponent, canActivate: [AuthService] },
+      { path: 'payments', component: PaymentsComponent, canActivate: [AuthService] },
+      { path: 'orders', component: OrdersComponent, canActivate: [AuthService] },
+      { path: 'premium', component: PremiumComponent, canActivate: [AuthService] },
+      { path: 'products', component: ProductsComponent, canActivate: [AuthService] },
+      { path: 'statistics', component: StatisticsComponent, canActivate: [AuthService] },
+      { path: 'friends', component: FriendsComponent, canActivate: [AuthService] },
+      { path: '**', component: NotFoundComponent },
     ])
   ],
   declarations: [
     AppComponent,
-    PagBibliotecaComponent,
-    PagPerfilComponent,
-    PagFilmesComponent,
-    PagSeriesComponent,
-    PagInicialComponent,
+    LibraryComponent,
+    ProfileComponent,
+    MoviesComponent,
+    SeriesComponent,
+    HomeComponent,
     LoginComponent,
     HeaderComponent,
     FooterComponent,
     RegisterComponent,
-    PagConteudoComponent,
-    PagProdutosComponent,
-    PagPagamentosComponent,
-    PagPedidosComponent,
-    PagAddConteudoComponent,
-    PagEstatisticasComponent,
-    PagFriendsComponent,
-    PagPremiumComponent,
-    PagEditPerfilComponent,
-    PagNotFoundComponent
+    ContentComponent,
+    ProductsComponent,
+    PaymentsComponent,
+    OrdersComponent,
+    AddContentComponent,
+    StatisticsComponent,
+    FriendsComponent,
+    PremiumComponent,
+    EditProfileComponent,
+    NotFoundComponent
   ],
   providers: [],
   bootstrap: [AppComponent],

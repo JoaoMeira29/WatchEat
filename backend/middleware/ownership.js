@@ -1,9 +1,9 @@
 'use strict'
-const pagamentoData = require("../services/pagamentoService");
-const pedidoData = require("../services/pedidoService");
+const paymentService = require("../services/paymentService");
+const orderService = require("../services/orderService");
 const utils = require('../utils/constants');
 
-// These middlewares must run after authCookieVerify, which stores the decoded token in req.user.user
+// These middlewares must run after authVerify, which stores the decoded token in req.user.user
 
 const getTokenUser = (req) => {
     const tokenUser = req.user?.user?.user;
@@ -42,9 +42,9 @@ const checkBodyOwner = (fieldName) => (req, res, next) => {
     return forbidden(res);
 }
 
-const checkPagamentoOwner = async (req, res, next) => {
+const checkPaymentOwner = async (req, res, next) => {
     try {
-        const pagamento = await pagamentoData.listPagamentoById(req.params.Id);
+        const pagamento = await paymentService.listPaymentById(req.params.Id);
         if (!Array.isArray(pagamento) || pagamento.length === 0) {
             return res.status(404).json({ error: 'Pagamento não encontrado' });
         }
@@ -58,9 +58,9 @@ const checkPagamentoOwner = async (req, res, next) => {
     }
 }
 
-const checkPedidoOwner = async (req, res, next) => {
+const checkOrderOwner = async (req, res, next) => {
     try {
-        const pedido = await pedidoData.listPedidoById(req.params.Id);
+        const pedido = await orderService.listOrderById(req.params.Id);
         if (!Array.isArray(pedido) || pedido.length === 0) {
             return res.status(404).json({ error: 'Pedido não encontrado' });
         }
@@ -76,7 +76,7 @@ const checkPedidoOwner = async (req, res, next) => {
 
 // A friend request goes from :Id (who sent it) to body.uId2 (who received it).
 // Only the receiver can accept it; either side can remove it.
-const checkPedidoAmizadeParticipant = (req, res, next) => {
+const checkFriendRequestParticipant = (req, res, next) => {
     const tokenUser = getTokenUser(req);
     if (!tokenUser) {
         return forbidden(res);
@@ -97,7 +97,7 @@ const checkPedidoAmizadeParticipant = (req, res, next) => {
 module.exports = {
     checkParamOwner,
     checkBodyOwner,
-    checkPagamentoOwner,
-    checkPedidoOwner,
-    checkPedidoAmizadeParticipant
+    checkPaymentOwner,
+    checkOrderOwner,
+    checkFriendRequestParticipant
 }

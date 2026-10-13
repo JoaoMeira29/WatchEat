@@ -1,14 +1,14 @@
 'use strict'
-const pagamentoData = require("../services/pagamentoService");
-const utilizadorData = require("../services/utilizadorService");
-const pedidoData = require("../services/pedidoService");
+const paymentService = require("../services/paymentService");
+const userService = require("../services/userService");
+const orderService = require("../services/orderService");
 const utils = require('../utils/constants');
 
-const pagamentoPedidosVerify  = async (req, res, next) => {
+const expireUnpaidOrders  = async (req, res, next) => {
     try{
         const userId = req.params.userId;
-        const user = await utilizadorData.listUtilizadorById(userId);
-        const userPedidosPagaments = await pedidoData.listPedidoPagamentoByUserId(userId)
+        const user = await userService.listUserById(userId);
+        const userPedidosPagaments = await orderService.listOrdersWithPaymentByUserId(userId)
 
         if (userPedidosPagaments.length !== 0) {
             const currentDate = new Date();
@@ -18,8 +18,8 @@ const pagamentoPedidosVerify  = async (req, res, next) => {
                 const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
 
                 if (diffInHours < 1) {
-                    await pagamentoData.updateTerminarPrazoPagamento(item.PagamentoId);
-                    await pedidoData.updateTerminarPrazoPedido(item.Id);
+                    await paymentService.expirePayment(item.PagamentoId);
+                    await orderService.expireOrder(item.Id);
                 }
             }
         }
@@ -35,5 +35,5 @@ const pagamentoPedidosVerify  = async (req, res, next) => {
 }
 
 module.exports = {
-    pagamentoPedidosVerify
+    expireUnpaidOrders
 }

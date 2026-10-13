@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const utilizadorData = require('../services/utilizadorService');
+const userService = require('../services/userService');
 const checkRoles = require('../middleware/rolesAuthorization');
 require('dotenv').config();
 
@@ -21,7 +21,7 @@ describe('USE checkRolePremium middleware', () => {
 
         const next = jest.fn();
 
-        const user = await utilizadorData.listUtilizadorByEmail("user1@gmail.com");
+        const user = await userService.listUserByEmail("user1@gmail.com");
         const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
 
         req.headers.authorization = `Bearer ${token}`;
@@ -52,7 +52,7 @@ describe('USE checkRolePremium middleware', () => {
 
         const next = jest.fn();
 
-        const user = await utilizadorData.listUtilizadorByEmail("admin@gmail.com");
+        const user = await userService.listUserByEmail("admin@gmail.com");
         const token = jwt.sign({ user }, process.env.SECRET_TOKEN);
 
         req.headers.authorization = `Bearer ${token}`;
