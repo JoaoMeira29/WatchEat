@@ -3,6 +3,7 @@ const contentEditService = require("../services/contentEditService");
 const userService = require("../services/userService");
 const utils = require('../utils/constants');
 const jwt = require("jsonwebtoken");
+const { handleError } = require('../utils/errors');
 
 const suspendAfterRejectedEdits  = async (req, res, next) => {
     try{
@@ -19,7 +20,7 @@ const suspendAfterRejectedEdits  = async (req, res, next) => {
         }
     }
     catch (error){
-        return res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -45,7 +46,7 @@ const suspendAfterRejectedEditsOnLogin  = async (req, res, next) => {
         return next();
     }
     catch (error){
-        return res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

@@ -18,7 +18,7 @@ export class ContentComponent {
   checkConteudo: any[] = [];
   generos: any[] = [];
   reviewP: any[] = [];
-  urlLoaded = false;
+  private trustedTrailers = new Map<string, SafeResourceUrl | null>();
   isButtonLoading: boolean = false;
   currentUser : any = null;
   checkUserReviewPremium: any = null;
@@ -67,12 +67,24 @@ export class ContentComponent {
     });
   }
 
-  getTrustedUrl(url: string): SafeResourceUrl {
-    if(!this.urlLoaded){
-      this.urlLoaded = true;
-      return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  // The trailer address comes from the database, so it is only embedded when it
+  // points to a known video host. The result is kept so the iframe is not reloaded
+  // on every change detection.
+  getTrustedUrl(url: string): SafeResourceUrl | null {
+    if (!this.trustedTrailers.has(url)) {
+      this.trustedTrailers.set(url, this.isAllowedTrailerUrl(url) ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null);
     }
-    return url;
+    return this.trustedTrailers.get(url) ?? null;
+  }
+
+  private isAllowedTrailerUrl(url: string): boolean {
+    const allowedHosts = ['www.youtube.com', 'youtube.com', 'www.youtube-nocookie.com', 'player.vimeo.com'];
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'https:' && allowedHosts.includes(parsed.hostname);
+    } catch {
+      return false;
+    }
   }
 
   AddWatchList() {

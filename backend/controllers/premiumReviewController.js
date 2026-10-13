@@ -2,6 +2,8 @@
 
 const premiumReviewService = require('../services/premiumReviewService');
 const utils = require('../utils/constants');
+const validation = require('../utils/validation');
+const { handleError } = require('../utils/errors');
 
 const getPremiumReviews = async (req, res) => {
     try {
@@ -9,7 +11,7 @@ const getPremiumReviews = async (req, res) => {
         res.send(revP);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -20,7 +22,7 @@ const getPremiumReviewsByUserId = async (req, res) => {
         res.send(revsP);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -31,7 +33,7 @@ const getPremiumReviewsByContentId = async (req, res) => {
         res.send(revsP);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -43,7 +45,7 @@ const getPremiumReviewsByUserIdAndContentId = async (req, res) => {
         res.send(revsP);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -51,11 +53,12 @@ const addPremiumReview = async (req, res)=> {
     try {
         const userId = req.params.userId;
         const data = req.body;
+        validation.validateReview(data);
         const created = await premiumReviewService.createPremiumReview(userId, data);
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -63,11 +66,12 @@ const updatePremiumReview = async (req, res)=> {
     try {
         const userId = req.params.userId;
         const data = req.body;
+        validation.validateReview(data, { partial: true });
         const created = await premiumReviewService.updatePremiumReview(userId, data);
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -79,7 +83,7 @@ const deletePremiumReview = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -90,7 +94,7 @@ const deleteUserPremiumReviews = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

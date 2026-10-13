@@ -1,8 +1,8 @@
 'use strict'
 const orderService = require('../services/orderService');
-const paymentService = require('../services/paymentService');
-const productService = require('../services/productService');
-const orderProductService = require('../services/orderProductService');
+const ownership = require('../middleware/ownership');
+const validation = require('../utils/validation');
+const { handleError } = require('../utils/errors');
 
 const getOrders = async (req, res) => {
     try {
@@ -10,7 +10,7 @@ const getOrders = async (req, res) => {
         res.send(pedidos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -21,7 +21,7 @@ const getOrder = async (req, res)=> {
         res.send(onePedido);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -33,31 +33,20 @@ const getUserOrders = async (req, res)=> {
         res.send(onePedido);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
 const addOrder = async (req, res)=> {
     try {
-        let precoTotal = 0;
-        const data = req.body;
-        const created = await orderService.createOrder(data);
-        for (const item of data.produtos) {
-            const getProdutoByNome = await productService.listProductByName(item.Nome);
-
-            if (getProdutoByNome[0].Stock >= item.Quantidade) {
-                await orderProductService.createOrderProduct(created[0].Id,getProdutoByNome[0].Id, getProdutoByNome[0].Preco, item.Quantidade);
-                await productService.updateProductStock(getProdutoByNome[0].Id, (getProdutoByNome[0].Stock - item.Quantidade));
-                precoTotal += (getProdutoByNome[0].Preco * item.Quantidade);
-            }
-        }
-
-        await orderService.updateOrderTotalPrice(created[0].Id,precoTotal)
-        const createdPagamento = await paymentService.createOrderPayment(created[0].Id, precoTotal, data.UtilizadorId);
-        res.send({created, createdPagamento});
+        const items = validation.validateOrder(req.body);
+        // The order always belongs to the logged in user, whatever the body says
+        const data = { ...req.body, UtilizadorId: ownership.getTokenUser(req).Id };
+        const result = await orderService.createOrderWithProducts(data, items);
+        res.send(result);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

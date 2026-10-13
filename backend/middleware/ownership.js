@@ -2,6 +2,7 @@
 const paymentService = require("../services/paymentService");
 const orderService = require("../services/orderService");
 const utils = require('../utils/constants');
+const { handleError } = require('../utils/errors');
 
 // These middlewares must run after authVerify, which stores the decoded token in req.user.user
 
@@ -54,7 +55,7 @@ const checkPaymentOwner = async (req, res, next) => {
         return forbidden(res);
     }
     catch (error) {
-        return res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -70,7 +71,7 @@ const checkOrderOwner = async (req, res, next) => {
         return forbidden(res);
     }
     catch (error) {
-        return res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

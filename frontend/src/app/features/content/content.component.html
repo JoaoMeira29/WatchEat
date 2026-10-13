@@ -15,7 +15,7 @@
       <div class="p-2 flex">
         <img class="ml-1 w-[20rem] h-[29rem]" src="{{ c.Poster || 'assets/img/poster-placeholder.svg' }}" alt="John Doe">
         <div class="ml-[5rem] relative w-[56rem]" >
-          <iframe class="absolute top-0 left-0 w-full h-full" [src]="getTrustedUrl(c.Trailer)" allowfullscreen></iframe>
+          <iframe *ngIf="getTrustedUrl(c.Trailer) as trailer" class="absolute top-0 left-0 w-full h-full" [src]="trailer" allowfullscreen></iframe>
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2">

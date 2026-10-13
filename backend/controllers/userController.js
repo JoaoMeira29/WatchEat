@@ -3,6 +3,7 @@
 const userService = require('../services/userService');
 const passwordUtils = require('../utils/password');
 const ownership = require('../middleware/ownership');
+const { handleError } = require('../utils/errors');
 
 // Only the user and admins see these fields of a profile
 const PRIVATE_FIELDS = ['NTelemovel', 'Morada', 'NIF'];
@@ -13,7 +14,7 @@ const getUsers = async (req, res) => {
         res.send(utilizadores);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -31,7 +32,7 @@ const getUser = async (req, res)=> {
         res.send(oneUtilizador);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -42,7 +43,7 @@ const getUserFriendships = async (req, res)=> {
         res.send(utilizadorAmizades);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -55,7 +56,7 @@ const getUserFriendshipsByStatus = async (req, res)=> {
         res.send(utilizadorAmizades);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -66,7 +67,7 @@ const getUserTopFriendships = async (req, res)=> {
         res.send(utilizadorAmizades);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -77,7 +78,7 @@ const addUser = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -113,7 +114,7 @@ const addFriendRequest = async (req, res)=> {
         }
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -149,7 +150,7 @@ const addFriendRequestByEmail = async (req, res)=> {
         }
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -161,7 +162,7 @@ const updateUser = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -179,7 +180,7 @@ const updateFriendRequest = async (req, res)=> {
         }
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -190,7 +191,7 @@ const deleteUser = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

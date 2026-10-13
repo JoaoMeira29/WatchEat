@@ -4,34 +4,6 @@ const config = require('../config');
 const sql = require('mssql');
 const utils = require('../utils/constants');
 
-// const Utilizador = require('../models/userModel'); // Provide the correct path to the utilizadorModel.js file
-// const Utilizador_Utilizador = require('../models/friendshipModel');
-// const { Sequelize, Op } = require('sequelize');
-//
-// const listUsers = async () => {
-//     try {
-//         return await Utilizador.findAll();
-//     } catch (error) {
-//         return error.message;
-//     }
-// }
-// const listUserById = async (Id)=> {
-//     try {
-//         return await Utilizador.findByPk(Id);
-//     }
-//     catch (error) {
-//         return  error.message;
-//     }
-// }
-// const listUserByEmail = async (Email)=> {
-//     try {
-//         return await Utilizador.findOne({ where: { Email: Email } });
-//     }
-//     catch (error) {
-//         return  error.message;
-//     }
-// }
-
 const listUsers = async () => {
     try {
         let pool = await sql.connect(config.sql);

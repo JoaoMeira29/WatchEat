@@ -66,20 +66,10 @@ cd backend
 npm install
 ```
 
-Create a `.env` file in `backend/`:
+Copy [.env.example](backend/.env.example) to `.env` in `backend/` and fill in the values:
 
-```ini
-PORT=3000
-HOST=localhost
-HOST_URL=http://localhost:3000
-
-SQL_SERVER=localhost
-SQL_DATABASE=WatchEat
-SQL_USER=your_user
-SQL_PASSWORD=your_password
-ENCRYPT=false
-
-SECRET_TOKEN=a-long-random-string
+```bash
+cp .env.example .env
 ```
 
 | Variable | Purpose |
@@ -88,20 +78,22 @@ SECRET_TOKEN=a-long-random-string
 | `HOST`, `HOST_URL` | Host name and base URL of the API. `PORT` and `HOST` are required at startup. |
 | `SQL_SERVER`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD` | SQL Server connection details. |
 | `ENCRYPT` | Set to `true` to encrypt the database connection. |
-| `SECRET_TOKEN` | Secret used to sign and verify login tokens. |
+| `SECRET_TOKEN` | Secret used to sign and verify login tokens. Required at startup. |
+| `CORS_ORIGIN` | Optional. Address of the frontend that may call the API from a browser. Defaults to `http://localhost:4200`. |
+| `AUTH_RATE_LIMIT` | Optional. Login and registration attempts allowed per address every 15 minutes. Defaults to 20. |
 
 Start the API:
 
 ```bash
-npm start
+npm run dev
 ```
 
-It runs under `nodemon` at `http://localhost:3000`.
+It runs at `http://localhost:3000` and restarts when a file changes. `npm start` runs it without the automatic restart.
 
 ### 3. Frontend
 
 ```bash
-cd WatchEat
+cd frontend
 npm install
 npm start
 ```
@@ -113,14 +105,15 @@ Open `http://localhost:4200`.
 ```bash
 # Backend (Jest + Supertest)
 cd backend
-npm test
+npm run test:unit   # no database needed
+npm test            # everything, including tests/integration
 
 # Frontend (Karma + Jasmine)
-cd WatchEat
+cd frontend
 npm test
 ```
 
-Some backend tests (`auth`, `user`, `premiumReview`, `rolesAuthorization`) run against the database configured in `.env` and expect the sample users from [seed.sql](database/seed.sql). The others (`password`, `ownership`, `privacy`, `renewPremium`, `authVerify`) need no database.
+The tests in `backend/tests/integration` run against the database configured in `.env` and expect the sample data from [seed.sql](database/seed.sql). All other backend tests need no database, and are the ones that run in CI ([ci.yml](.github/workflows/ci.yml)) together with the frontend build.
 
 ## Project structure
 
@@ -140,9 +133,9 @@ backend/                     Express API
   controllers/               Request handlers
   services/                  SQL queries
   middleware/                Token check, role checks, payment and suspension rules
-  models/                    Sequelize models (not used by the API; see database/schema.sql)
-  utils/constants.js         Status and role constants
-  tests/                     Jest tests
+  utils/                     Status and role constants, password hashing, validation, error handling
+  tests/                     Jest unit tests
+  tests/integration/         Tests that need the database
 
 database/
   schema.sql                 Tables
@@ -151,7 +144,7 @@ database/
 
 ## API overview
 
-All endpoints are under `/api`. Apart from login, registration, and reading the catalogue and genres, every endpoint needs a token, sent as `Authorization: Bearer <token>`. Tokens expire after one hour. Request and response fields keep the Portuguese column names of the database, such as `Nome` and `UtilizadorId`.
+All endpoints are under `/api`. Apart from login, registration, and reading the catalogue and genres, every endpoint needs a token, sent as `Authorization: Bearer <token>`. Tokens expire after one hour, and stop working at once if the account is suspended or removed. Login and registration are rate limited. Request and response fields keep the Portuguese column names of the database, such as `Nome` and `UtilizadorId`.
 
 | Area | Example endpoints | Route file |
 | --- | --- | --- |
@@ -172,8 +165,11 @@ All endpoints are under `/api`. Apart from login, registration, and reading the 
 
 This is a learning project and is not ready for production use.
 
-- Payments are simulated. No payment provider is connected.
-- Some dependencies have known vulnerabilities that only a major upgrade fixes: Angular 15 in the frontend, and `mssql` and `tedious` in the backend.
+- Payments are simulated. No payment provider is connected, so paying only takes a click.
+- There is no HTTPS setup. Run it behind a reverse proxy that adds TLS before exposing it.
+- The login token is kept in the browser's `localStorage`.
+- List endpoints return whole tables; there is no pagination.
+- Some dependencies have known vulnerabilities that only a major upgrade fixes: Angular 15 in the frontend, and `mssql` in the backend.
 - The frontend has a single environment file, so the API address is the same for development and production builds.
 - The search box in the header is not connected to anything yet.
 - Couriers and menus exist in the API but have no pages in the app.

@@ -1,6 +1,7 @@
 'use strict'
 
 const actorService = require('../services/actorService');
+const { handleError } = require('../utils/errors');
 
 const getActors = async (req, res) => {
     try {
@@ -8,7 +9,7 @@ const getActors = async (req, res) => {
         res.send(atores);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -19,7 +20,7 @@ const getActor = async (req, res)=> {
         res.send(oneAtores);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -30,7 +31,7 @@ const addActor = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -42,7 +43,7 @@ const updateActor = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -53,7 +54,7 @@ const deleteActor = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

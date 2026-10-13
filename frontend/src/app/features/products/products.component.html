@@ -66,6 +66,7 @@
         </div>
         <!-- Modal footer -->
         <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <div *ngIf="errorMessage" class="font-semibold text-red-600 text-sm">{{ errorMessage }}</div>
           <button (click)="concluirPedido()" data-modal-hide="defaultModal" type="button" class="bg-red-600 hover:bg-red-800 py-1 px-2 rounded text-white text-sm">Submeter</button>
           <button (click)="closeModal()" data-modal-hide="defaultModal" type="button" class="bg-gray-900 hover:bg-gray-950 py-1 px-2 rounded text-white text-sm">Cancelar</button>
         </div>

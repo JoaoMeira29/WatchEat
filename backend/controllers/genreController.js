@@ -2,6 +2,7 @@
 
 const genreService = require('../services/genreService');
 const utils = require('../utils/constants');
+const { handleError } = require('../utils/errors');
 
 const getGenres = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ const getGenres = async (req, res) => {
         res.send(generos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -20,7 +21,7 @@ const getGenreById = async (req, res) => {
         res.send(genero);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -32,7 +33,7 @@ const addGenre = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -44,7 +45,7 @@ const updateGenre = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -55,7 +56,7 @@ const deleteGenre = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

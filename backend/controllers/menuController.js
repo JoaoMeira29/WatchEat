@@ -1,5 +1,6 @@
 'use strict'
 const menuService = require('../services/menuService');
+const { handleError } = require('../utils/errors');
 
 const getMenus = async (req, res) => {
     try {
@@ -7,7 +8,7 @@ const getMenus = async (req, res) => {
         res.send(menus);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -18,7 +19,7 @@ const getMenu = async (req, res)=> {
         res.send(oneMenu);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -29,7 +30,7 @@ const addMenu = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -41,7 +42,7 @@ const updateMenu = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -52,7 +53,7 @@ const deleteMenu = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

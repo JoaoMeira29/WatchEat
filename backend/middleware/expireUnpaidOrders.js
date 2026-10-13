@@ -3,6 +3,7 @@ const paymentService = require("../services/paymentService");
 const userService = require("../services/userService");
 const orderService = require("../services/orderService");
 const utils = require('../utils/constants');
+const { handleError } = require('../utils/errors');
 
 const expireUnpaidOrders  = async (req, res, next) => {
     try{
@@ -30,7 +31,7 @@ const expireUnpaidOrders  = async (req, res, next) => {
         return next();
     }
     catch (error){
-        return res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

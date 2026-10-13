@@ -18,6 +18,7 @@ export class ProductsComponent {
   produtosQuantidades: { [key: string]: number } = {};
   @ViewChild('staticModal') staticModal: any; // Reference to the modal element
 
+  errorMessage: string | null = null;
   pedidoForm = this.formBuilder.group({
     Descricao: '',
     Morada: '',
@@ -68,8 +69,14 @@ export class ProductsComponent {
     const token = localStorage.getItem('token');
     const tokenPayload = decode(token as string) as any;
 
-    this.ordersDataService.addOrder(this.pedidoForm, this.produtosArray, tokenPayload.user[0].Id).subscribe((data: Object) => {
-      this.router.navigate(['/payments']);
+    this.ordersDataService.addOrder(this.pedidoForm, this.produtosArray, tokenPayload.user[0].Id).subscribe({
+      next: () => {
+        this.errorMessage = null;
+        this.router.navigate(['/payments']);
+      },
+      error: (error: any) => {
+        this.errorMessage = error.error?.error ?? 'Não foi possível concluir o pedido';
+      }
     });
 
   }

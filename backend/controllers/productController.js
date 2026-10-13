@@ -1,6 +1,7 @@
 'use strict'
 
 const productService = require('../services/productService');
+const { handleError } = require('../utils/errors');
 
 const getProducts = async (req, res) => {
     try {
@@ -8,7 +9,7 @@ const getProducts = async (req, res) => {
         res.send(produtos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -19,7 +20,7 @@ const getProduct = async (req, res)=> {
         res.send(oneProduto);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -30,7 +31,7 @@ const addProduct = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -42,7 +43,7 @@ const updateProduct = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -53,7 +54,7 @@ const deleteProduct = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

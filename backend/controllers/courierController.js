@@ -1,5 +1,6 @@
 'use strict'
 const courierService = require('../services/courierService');
+const { handleError } = require('../utils/errors');
 
 const getCouriers = async (req, res) => {
     try {
@@ -7,7 +8,7 @@ const getCouriers = async (req, res) => {
         res.send(estafetas);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -18,7 +19,7 @@ const getCourier = async (req, res)=> {
         res.send(oneEstafeta);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -29,7 +30,7 @@ const addCourier = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -41,7 +42,7 @@ const updateCourier = async (req, res)=> {
         res.send(updated);
     }   
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -52,7 +53,7 @@ const deleteCourier = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

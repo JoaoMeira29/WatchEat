@@ -4,6 +4,7 @@ const libraryService = require('../services/libraryService');
 const userService = require('../services/userService');
 const ownership = require('../middleware/ownership');
 const utils = require('../utils/constants');
+const { handleError } = require('../utils/errors');
 
 const areFriends = async (userId, otherUserId) => {
     const sent = await userService.listFriendship(userId, otherUserId);
@@ -32,7 +33,7 @@ const getLibraries = async (req, res) => {
         res.send(bibliotecas);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -50,7 +51,7 @@ const getLibrariesByVisibility = async (req, res) => {
         res.send(bibliotecas);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -61,7 +62,7 @@ const getLibrary = async (req, res)=> {
         res.send(await filterByVisibility(req, userId, oneBiblioteca));
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -72,7 +73,7 @@ const getLibraryTopMovies = async (req, res)=> {
         res.send(await filterByVisibility(req, userId, oneBiblioteca));
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -83,7 +84,7 @@ const getLibraryTopSeries = async (req, res)=> {
         res.send(await filterByVisibility(req, userId, oneBiblioteca));
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -95,7 +96,7 @@ const getLibraryContent = async (req, res)=> {
         res.send(await filterByVisibility(req, userId, oneConteudo));
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -107,7 +108,7 @@ const checkLibraryContent = async (req, res)=> {
         res.send(await filterByVisibility(req, userId, oneConteudo));
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -119,7 +120,7 @@ const addContentToLibrary = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -131,7 +132,7 @@ const updateContentInLibrary = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -143,7 +144,7 @@ const updateLibraryVisibility = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

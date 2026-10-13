@@ -1,64 +1,32 @@
 'use strict'
-const jwt = require('jsonwebtoken');
-const userService = require('../services/userService');
 const utils = require('../utils/constants');
 
-const checkRoleAdmin = async (req, res, next) => {
-    let token = req.headers.authorization?.split(' ')[1];
+// These middlewares must run after authVerify, which loads the user's current role from the database
 
-    if (!token) {
-        token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ message: 'Token not provided' });
-        }
-    }
-
-    try{
-        const user = jwt.verify(token, process.env.SECRET_TOKEN);
-        const findUser = await userService.listUserById(user.user[0].Id);
-
-        if (findUser[0].Utilizador_Roles === utils.user_roles.UR_Admin) {
-            next();
-        }
-        else {
-            return res.status(401).json({
-                error: `Utilizador --> (${findUser[0].Id}) Não possui autorização para ver esta informação/página`
-            });
-        }
-    }
-    catch (error){
-        // res.clearCookie("token");
-        return res.status(401).json({ error: `${error.message}` });
-    }
+const getRole = (req) => {
+    const tokenUser = req.user?.user?.user;
+    return Array.isArray(tokenUser) ? tokenUser[0]?.Utilizador_Roles : undefined;
 }
 
-const checkRolePremium = async (req, res, next) => {
-    let token = req.headers.authorization?.split(' ')[1];
+const forbidden = (res) => {
+    return res.status(403).json({
+        error: 'Não possui autorização para ver esta informação/página'
+    });
+}
 
-    if (!token) {
-        token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ message: 'Token not provided' });
-        }
+const checkRoleAdmin = (req, res, next) => {
+    if (getRole(req) === utils.user_roles.UR_Admin) {
+        return next();
     }
+    return forbidden(res);
+}
 
-    try{
-        const user = jwt.verify(token, process.env.SECRET_TOKEN);
-        const findUser = await userService.listUserById(user.user[0].Id);
-
-        if (findUser[0].Utilizador_Roles === utils.user_roles.UR_Premium || findUser[0].Utilizador_Roles === utils.user_roles.UR_Admin ) {
-            next();
-        }
-        else {
-            return res.status(401).json({
-                error: `Utilizador --> (${findUser[0].Id}) Não possui autorização para ver esta informação/página`
-            });
-        }
+const checkRolePremium = (req, res, next) => {
+    const role = getRole(req);
+    if (role === utils.user_roles.UR_Premium || role === utils.user_roles.UR_Admin) {
+        return next();
     }
-    catch (error){
-        // res.clearCookie("token");
-        return res.status(401).json({ error: `${error.message}` });
-    }
+    return forbidden(res);
 }
 
 module.exports = {

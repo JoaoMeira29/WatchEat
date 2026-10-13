@@ -1,6 +1,8 @@
 'use strict'
 const contentEditService = require('../services/contentEditService');
 const contentService = require("../services/contentService");
+const ownership = require("../middleware/ownership");
+const { handleError } = require('../utils/errors');
 
 const getContentEdits = async (req, res) => {
     try {
@@ -8,7 +10,7 @@ const getContentEdits = async (req, res) => {
         res.send(alteracoes);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -19,7 +21,7 @@ const getContentEditsByContentId = async (req, res)=> {
         res.send(alteracoes);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -30,13 +32,14 @@ const getContentEditsByUserId = async (req, res)=> {
         res.send(alteracoes);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
 const addContentEdit = async (req, res)=> {
     try {
-        const data = req.body;
+        // The edit is always filed by the logged in user, whatever the body says
+        const data = { ...req.body, UtilizadorId: ownership.getTokenUser(req).Id };
         const conteudo = await contentService.listContentById(data.ConteudoId);
         const cF = await contentService.listContentMovie(data.ConteudoId);
         const cS = await contentService.listContentSeries(data.ConteudoId);
@@ -50,7 +53,7 @@ const addContentEdit = async (req, res)=> {
         res.send({conteudo});
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -62,7 +65,7 @@ const updateContentEdit = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

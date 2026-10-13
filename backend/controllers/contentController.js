@@ -5,6 +5,7 @@ const genreService = require("../services/genreService");
 const actorService = require("../services/actorService");
 const contentGenreService = require("../services/contentGenreService")
 const contentActorService = require("../services/contentActorService")
+const { handleError } = require('../utils/errors');
 
 const getContents = async (req, res) => {
     try {
@@ -12,7 +13,7 @@ const getContents = async (req, res) => {
         res.send(conteudos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -22,7 +23,7 @@ const getRandomContents = async (req, res) => {
         res.send(conteudos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -41,7 +42,7 @@ const getContentById = async (req, res)=> {
         return res.status(404).json({error: 'Not Found'});
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -60,7 +61,7 @@ const getContentByName = async (req, res)=> {
         return res.status(404).json({error: 'Not Found'});
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -70,7 +71,7 @@ const getMovies = async (req, res) => {
         res.send(conteudosFilmes);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -80,7 +81,7 @@ const getSeries = async (req, res) => {
         res.send(conteudosSeries);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -91,7 +92,7 @@ const getGenresByContentId = async (req, res) => {
         res.send(generosCont);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -102,7 +103,7 @@ const addContent = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -124,7 +125,7 @@ const addMovie = async (req, res)=> {
         res.send(createdCont);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -146,7 +147,7 @@ const addSeries = async (req, res)=> {
         res.send({createdCont});
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -158,7 +159,7 @@ const updateContent = async (req, res)=> {
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -169,7 +170,7 @@ const deleteContent = async (req, res)=> {
         res.send(deleted);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

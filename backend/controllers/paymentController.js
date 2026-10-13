@@ -3,6 +3,8 @@ const paymentService = require('../services/paymentService');
 const orderService = require('../services/orderService')
 const userService = require("../services/userService");
 const utils = require("../utils/constants");
+const validation = require("../utils/validation");
+const { HttpError, handleError } = require("../utils/errors");
 
 const getPayments = async (req, res) => {
     try {
@@ -10,7 +12,7 @@ const getPayments = async (req, res) => {
         res.send(pagamentos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -22,7 +24,7 @@ const getUserPayments = async (req, res) => {
         res.send(pagamentos);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -33,7 +35,7 @@ const getPayment = async (req, res)=> {
         res.send(onePagamento);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -44,7 +46,7 @@ const getUnpaidPremiumPayments = async (req, res)=> {
         res.send(pagamentosPremium);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -54,7 +56,7 @@ const getPremiumPayments = async (req, res)=> {
         res.send(pagamentosPremium);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -65,7 +67,7 @@ const getLatestPremiumPayment = async (req, res)=> {
         res.send(topPagamentoPremium);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -76,7 +78,7 @@ const addOrderPayment = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
@@ -87,28 +89,47 @@ const addPremiumPayment = async (req, res)=> {
         res.send(created);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 
 const updatePayment = async (req, res)=> {
     try {
         const pagamentoId = req.params.Id;
-        const data = req.body;
-        const updated = await paymentService.updatePayment(pagamentoId, data);
+        validation.validatePaymentStatus(req.body);
 
         const onePagamento = await paymentService.listPaymentById(pagamentoId);
-        if (onePagamento[0].TipoPagamento == "Tier premium") {
-            await userService.updateUserRole(onePagamento[0].UtilizadorId,utils.user_roles.UR_Premium);
+        if (onePagamento.length === 0) {
+            throw new HttpError(404, 'Pagamento não encontrado');
+        }
+        // A payment is decided once: it cannot be paid after it was cancelled or expired
+        if (onePagamento[0].Estado !== utils.estadosPagamentos.EP_NaoPago) {
+            throw new HttpError(409, 'Este pagamento já foi pago ou o prazo terminou');
+        }
+
+        const isPremium = onePagamento[0].TipoPagamento == "Tier premium";
+        let updated;
+        if (req.body.Estado === utils.estadosPagamentos.EP_Pago) {
+            updated = await paymentService.updatePayment(pagamentoId, { Estado: utils.estadosPagamentos.EP_Pago });
+            // Only a paid payment grants what it was for
+            if (isPremium) {
+                await userService.updateUserRole(onePagamento[0].UtilizadorId,utils.user_roles.UR_Premium);
+            }
+            else {
+                await orderService.markOrderPaid(onePagamento[0].PedidoId);
+            }
         }
         else {
-            await orderService.markOrderPaid(onePagamento[0].PedidoId);
+            updated = await paymentService.expirePayment(pagamentoId);
+            if (!isPremium) {
+                await orderService.expireOrder(onePagamento[0].PedidoId);
+            }
         }
 
         res.send(updated);
     }
     catch (error) {
-        res.status(400).send(error.message);
+        return handleError(res, error);
     }
 }
 

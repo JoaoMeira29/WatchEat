@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes} from "@angular/router";
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './features/login/login.component';
@@ -26,6 +26,8 @@ import { EditProfileComponent } from './features/edit-profile/edit-profile.compo
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 
 import { AuthService } from './shared/services/auth/auth.service';
+import { RoleGuard } from './shared/services/auth/role.guard';
+import { AuthInterceptor } from './shared/services/auth/auth.interceptor';
 
 @NgModule({
   imports: [
@@ -43,13 +45,13 @@ import { AuthService } from './shared/services/auth/auth.service';
       { path: 'library', component: LibraryComponent, canActivate: [AuthService] },
       { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthService] },
       { path: 'edit-profile', component: EditProfileComponent, canActivate: [AuthService] },
-      { path: 'add-content', component: AddContentComponent },
+      { path: 'add-content', component: AddContentComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
       { path: 'content/:id', component: ContentComponent, canActivate: [AuthService] },
       { path: 'payments', component: PaymentsComponent, canActivate: [AuthService] },
       { path: 'orders', component: OrdersComponent, canActivate: [AuthService] },
       { path: 'premium', component: PremiumComponent, canActivate: [AuthService] },
       { path: 'products', component: ProductsComponent, canActivate: [AuthService] },
-      { path: 'statistics', component: StatisticsComponent, canActivate: [AuthService] },
+      { path: 'statistics', component: StatisticsComponent, canActivate: [RoleGuard], data: { roles: ['Premium', 'Admin'] } },
       { path: 'friends', component: FriendsComponent, canActivate: [AuthService] },
       { path: '**', component: NotFoundComponent },
     ])
@@ -76,7 +78,9 @@ import { AuthService } from './shared/services/auth/auth.service';
     EditProfileComponent,
     NotFoundComponent
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
