@@ -2,6 +2,10 @@
 
 const userService = require('../services/userService');
 const passwordUtils = require('../utils/password');
+const ownership = require('../middleware/ownership');
+
+// Only the user and admins see these fields of a profile
+const PRIVATE_FIELDS = ['NTelemovel', 'Morada', 'NIF'];
 
 const getUsers = async (req, res) => {
     try {
@@ -17,6 +21,13 @@ const getUser = async (req, res)=> {
     try {
         const utilizadorId = req.params.Id;
         const oneUtilizador = await userService.listUserById(utilizadorId);
+        if (!ownership.isOwnerOrAdmin(req, utilizadorId)) {
+            for (const utilizador of oneUtilizador) {
+                for (const field of PRIVATE_FIELDS) {
+                    delete utilizador[field];
+                }
+            }
+        }
         res.send(oneUtilizador);
     }
     catch (error) {

@@ -41,11 +41,11 @@ const listOrderById = async (Id)=> {
 const listOrderWithPaymentById = async (Id)=> {
     try {
         let pool = await  sql.connect(config.sql);
-        let query = 'SELECT [Id],[Descricao],[Morada],[HoraReservada],[HoraReserva],[HoraEntrega],' +
-            '[PrecoTotal],[Estado],[UtilizadorId],[EstafetaId],[ValorPagar],[DataEmissao]' +
+        let query = 'SELECT [Pedido].[Id],[Pedido].[Descricao],[Morada],[HoraReservada],[HoraReserva],[HoraEntrega],' +
+            '[PrecoTotal],[Pedido].[Estado],[Pedido].[UtilizadorId],[EstafetaId],[ValorPagar],[DataEmissao]' +
             'FROM [dbo].[Pedido] ' +
             'JOIN [Pagamento] ON [Pagamento].[PedidoId] = [Pedido].[Id]' +
-            'WHERE [Id] = @Id AND [TipoPagamento]=@TipoPagamento';
+            'WHERE [Pedido].[Id] = @Id AND [TipoPagamento]=@TipoPagamento';
 
         const onePedido = await pool.request()
             .input('Id', sql.Int, Id)

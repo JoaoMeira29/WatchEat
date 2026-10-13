@@ -95,6 +95,9 @@ const checkFriendRequestParticipant = (req, res, next) => {
 }
 
 module.exports = {
+    getTokenUser,
+    isSameId,
+    isOwnerOrAdmin,
     checkParamOwner,
     checkBodyOwner,
     checkPaymentOwner,

@@ -100,7 +100,7 @@ const createPremiumReview = async (Id, data) => {
 const updatePremiumReview = async (uId, data) => {
     try {
         let pool = await sql.connect(config.sql);
-        let query = 'UPDATE [dbo].[Biblioteca] SET ';
+        let query = 'UPDATE [dbo].[ReviewsPremium] SET ';
         const inputParams = ['Review', 'Rating'];
         for (const param of inputParams) {
             query += data[param] ? `${param} = @${param}, ` : '';
@@ -124,7 +124,7 @@ const updatePremiumReview = async (uId, data) => {
 const deletePremiumReview = async (uId, data) => {
     try {
         let pool = await sql.connect(config.sql);
-        let query = 'DELETE [dbo].[Biblioteca] WHERE [UtilizadorId]=@uId AND [ConteudoId]=@cId';
+        let query = 'DELETE [dbo].[ReviewsPremium] WHERE [UtilizadorId]=@uId AND [ConteudoId]=@cId';
 
         const update = await pool.request()
             .input('uId', sql.Int, uId)
@@ -140,7 +140,7 @@ const deletePremiumReview = async (uId, data) => {
 const deleteUserPremiumReviews = async (uId) => {
     try {
         let pool = await sql.connect(config.sql);
-        let query = 'DELETE [dbo].[Biblioteca] WHERE [UtilizadorId]=@uId';
+        let query = 'DELETE [dbo].[ReviewsPremium] WHERE [UtilizadorId]=@uId';
 
         const update = await pool.request()
             .input('uId', sql.Int, uId)

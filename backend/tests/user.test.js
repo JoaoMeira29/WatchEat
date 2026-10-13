@@ -3,16 +3,15 @@ const app = require('../app');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-describe('GET /Utilizadores', () => {
-    it('should return utilizadores list when using valid token', async () => {
+describe('GET /users', () => {
+    it('should return 401 when the token does not belong to an admin', async () => {
         const token = jwt.sign({ user: 'mockUser' }, process.env.SECRET_TOKEN);
 
         const response = await request(app)
             .get('/api/users')
             .set('Authorization', `Bearer ${token}`);
 
-        expect(response.status).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.status).toBe(401);
     });
 });
 

@@ -10,7 +10,7 @@ const {getUsers, getUser, getUserFriendships, getUserFriendshipsByStatus, getUse
     addUser, addFriendRequest, addFriendRequestByEmail,
     updateUser, updateFriendRequest, deleteUser} = userController;
 
-router.get('/users', auth.authVerify, getUsers);
+router.get('/users', auth.authVerify, checkRoles.checkRoleAdmin, getUsers);
 router.get('/users/:Id', auth.authVerify, getUser);
 router.get('/users/:Id/friendships', auth.authVerify, ownership.checkParamOwner('Id'), getUserFriendships);
 router.get('/users/:Id/friendships/status/:Estado', auth.authVerify, ownership.checkParamOwner('Id'), getUserFriendshipsByStatus);

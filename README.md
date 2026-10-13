@@ -42,7 +42,22 @@ It has two parts: an Angular single-page app ([frontend/](frontend/)) and an Exp
 
 ### 1. Database
 
-The repository does not include a schema or seed script yet. Create the database and its tables by hand, using the definitions in [backend/models/](backend/models/) for the table and column names.
+Create an empty database, then run the two scripts in [database/](database/) in order:
+
+1. [schema.sql](database/schema.sql) creates the tables.
+2. [seed.sql](database/seed.sql) adds sample users, films, series, products and couriers. The sample accounts and their passwords are listed at the top of the file.
+
+With `sqlcmd`:
+
+```bash
+sqlcmd -S localhost -E -Q "CREATE DATABASE WatchEat"
+sqlcmd -S localhost -E -d WatchEat -i database/schema.sql
+sqlcmd -S localhost -E -d WatchEat -i database/seed.sql
+```
+
+You can also open each file in SQL Server Management Studio and run it against the new database.
+
+The API connects with a SQL Server login (a user name and password), not with your Windows account. If your server only accepts Windows logins, enable "SQL Server and Windows Authentication mode" in the server's security properties, restart the SQL Server service, and create a login that has access to the `WatchEat` database.
 
 ### 2. Backend
 
@@ -105,7 +120,7 @@ cd WatchEat
 npm test
 ```
 
-The backend tests run against the database configured in `.env` and expect specific users to exist in it, such as `user1@gmail.com`.
+Some backend tests (`auth`, `user`, `premiumReview`, `rolesAuthorization`) run against the database configured in `.env` and expect the sample users from [seed.sql](database/seed.sql). The others (`password`, `ownership`, `privacy`, `renewPremium`, `authVerify`) need no database.
 
 ## Project structure
 
@@ -125,9 +140,13 @@ backend/                     Express API
   controllers/               Request handlers
   services/                  SQL queries
   middleware/                Token check, role checks, payment and suspension rules
-  models/                    Table definitions
+  models/                    Sequelize models (not used by the API; see database/schema.sql)
   utils/constants.js         Status and role constants
   tests/                     Jest tests
+
+database/
+  schema.sql                 Tables
+  seed.sql                   Sample data and development accounts
 ```
 
 ## API overview
@@ -153,9 +172,8 @@ All endpoints are under `/api`. Apart from login, registration, and reading the 
 
 This is a learning project and is not ready for production use.
 
-- Any logged-in user can read another user's profile and library, whatever the library's visibility setting.
 - Payments are simulated. No payment provider is connected.
-- There is no database schema or seed script in the repository.
+- Some dependencies have known vulnerabilities that only a major upgrade fixes: Angular 15 in the frontend, and `mssql` and `tedious` in the backend.
 - The frontend has a single environment file, so the API address is the same for development and production builds.
 - The search box in the header is not connected to anything yet.
 - Couriers and menus exist in the API but have no pages in the app.
