@@ -13,7 +13,7 @@
         <p>{{ c.Duracao ? c.Duracao + " horas" : c.NTemporadas + " Temporada/s" }}</p>
       </div>
       <div class="p-2 flex">
-        <img class="ml-1 w-[20rem] h-[29rem]" src="{{ c.Poster }}" alt="John Doe">
+        <img class="ml-1 w-[20rem] h-[29rem]" src="{{ c.Poster || 'assets/img/poster-placeholder.svg' }}" alt="John Doe">
         <div class="ml-[5rem] relative w-[56rem]" >
           <iframe class="absolute top-0 left-0 w-full h-full" [src]="getTrustedUrl(c.Trailer)" allowfullscreen></iframe>
         </div>

@@ -16,7 +16,7 @@
               &check;
             </span>
           </div>
-          <img (click)="openModal(conteudo.ConteudoId)" class="w-full max-h-[17.6rem]" class="w-full h-[17.5rem] max-h-[17.5rem] hover:cursor-pointer hover:ring-1 hover:ring-red-600 hover:ring-offset-1 hover:ring-offset-red-700" src="{{ conteudo.Poster }}">
+          <img (click)="openModal(conteudo.ConteudoId)" class="w-full max-h-[17.6rem]" class="w-full h-[17.5rem] max-h-[17.5rem] hover:cursor-pointer hover:ring-1 hover:ring-red-600 hover:ring-offset-1 hover:ring-offset-red-700" src="{{ conteudo.Poster || 'assets/img/poster-placeholder.svg' }}">
           <div class="px-6 py-4">
             <label [id]="conteudo.ConteudoId"></label>
             <p class="font-bold text-white">

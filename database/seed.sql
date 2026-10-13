@@ -11,7 +11,7 @@
       admin@gmail.com  / admin   Admin
 
   The backend tests in backend/tests expect user1, user4 and admin to exist.
-  Posters and trailers are left empty: add your own image and video links.
+  Posters are links to images hosted by Wikipedia. Trailers are left empty.
 */
 
 SET IDENTITY_INSERT [dbo].[Utilizador] ON;
@@ -40,12 +40,12 @@ SET IDENTITY_INSERT [dbo].[Genero] OFF;
 
 SET IDENTITY_INSERT [dbo].[Conteudo] ON;
 INSERT INTO [dbo].[Conteudo] ([Id],[Nome],[Poster],[Realizador],[Rating],[DataReleased],[Sinopse],[Trailer]) VALUES
-    (1, N'The Shawshank Redemption', NULL, N'Frank Darabont',       9.3, '1994-09-23', N'Um banqueiro condenado a prisão perpétua faz amizade com outro recluso e nunca perde a esperança.', NULL),
-    (2, N'The Godfather',            NULL, N'Francis Ford Coppola', 9.2, '1972-03-24', N'O patriarca de uma família do crime organizado passa o controlo do império ao filho mais novo.', NULL),
-    (3, N'Inception',                NULL, N'Christopher Nolan',    8.8, '2010-07-16', N'Um ladrão que rouba segredos através dos sonhos recebe a missão de implantar uma ideia.', NULL),
-    (4, N'Parasite',                 NULL, N'Bong Joon-ho',         8.5, '2019-05-30', N'Uma família pobre infiltra-se, um a um, na casa de uma família rica.', NULL),
-    (5, N'Breaking Bad',             NULL, N'Vince Gilligan',       9.5, '2008-01-20', N'Um professor de química com cancro começa a produzir metanfetamina para garantir o futuro da família.', NULL),
-    (6, N'Chernobyl',                NULL, N'Craig Mazin',          9.3, '2019-05-06', N'A história do acidente nuclear de 1986 e das pessoas que tentaram conter as suas consequências.', NULL);
+    (1, N'The Shawshank Redemption', 'https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg', N'Frank Darabont',       9.3, '1994-09-23', N'Um banqueiro condenado a prisão perpétua faz amizade com outro recluso e nunca perde a esperança.', NULL),
+    (2, N'The Godfather',            'https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg', N'Francis Ford Coppola', 9.2, '1972-03-24', N'O patriarca de uma família do crime organizado passa o controlo do império ao filho mais novo.', NULL),
+    (3, N'Inception',                'https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg', N'Christopher Nolan',    8.8, '2010-07-16', N'Um ladrão que rouba segredos através dos sonhos recebe a missão de implantar uma ideia.', NULL),
+    (4, N'Parasite',                 'https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.png', N'Bong Joon-ho',         8.5, '2019-05-30', N'Uma família pobre infiltra-se, um a um, na casa de uma família rica.', NULL),
+    (5, N'Breaking Bad',             'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Breaking_Bad_gas_mask.jpg/500px-Breaking_Bad_gas_mask.jpg', N'Vince Gilligan',       9.5, '2008-01-20', N'Um professor de química com cancro começa a produzir metanfetamina para garantir o futuro da família.', NULL),
+    (6, N'Chernobyl',                'https://upload.wikimedia.org/wikipedia/en/a/a7/Chernobyl_2019_Miniseries.jpg', N'Craig Mazin',          9.3, '2019-05-06', N'A história do acidente nuclear de 1986 e das pessoas que tentaram conter as suas consequências.', NULL);
 SET IDENTITY_INSERT [dbo].[Conteudo] OFF;
 
 INSERT INTO [dbo].[Filme] ([Duracao],[ConteudoId]) VALUES

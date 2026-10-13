@@ -2,7 +2,7 @@
   <div class="relative">
     <div id="slidesContainer" class="slides-container h-[30rem] flex snap-x snap-mandatory overflow-hidden overflow-x-auto space-x-2 rounded scroll-smooth before:w-[45vw] before:shrink-0 after:w-[45vw] after:shrink-0 md:before:w-0 md:after:w-0">
       <div *ngFor="let cont of randomConteudos" class="slide aspect-square h-full flex-shrink-0 snap-center rounded overflow-hidden w-[19rem]">
-        <img [routerLink]="['/content', cont.Id]" id="{{ cont.Id }}" class="hover:cursor-pointer w-full h-full object-cover" src="{{ cont.Poster }}" alt="mountain_image">
+        <img [routerLink]="['/content', cont.Id]" id="{{ cont.Id }}" class="hover:cursor-pointer w-full h-full object-cover" src="{{ cont.Poster || 'assets/img/poster-placeholder.svg' }}" alt="mountain_image">
       </div>
     </div>
     <div class="absolute top-0 -left-4 h-full items-center hidden md:flex">
@@ -25,7 +25,7 @@
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-5">
     <div class="row" *ngFor="let conteudo of conteudos">
       <div class="max-w-lg rounded overflow-hidden shadow-lg mb-2 bg-gray-800">
-        <img [routerLink]="['/content', conteudo.Id]" class="w-full h-[17.5rem] max-h-[17.5rem] hover:cursor-pointer hover:ring-1 hover:ring-red-600 hover:ring-offset-1 hover:ring-offset-red-700" src="{{ conteudo.Poster}}">
+        <img [routerLink]="['/content', conteudo.Id]" class="w-full h-[17.5rem] max-h-[17.5rem] hover:cursor-pointer hover:ring-1 hover:ring-red-600 hover:ring-offset-1 hover:ring-offset-red-700" src="{{ conteudo.Poster || 'assets/img/poster-placeholder.svg' }}">
         <div class="px-6 py-4">
           <label [id]="conteudo.Id"></label>
           <p class="font-bold text-white">
